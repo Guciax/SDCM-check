@@ -24,8 +24,6 @@ namespace SDCM_check
             SqlDataAdapter adapter = new SqlDataAdapter(command);
             adapter.Fill(sqlTableLot);
 
-            
-
             return sqlTableLot;
         }
 
@@ -60,8 +58,6 @@ namespace SDCM_check
             SqlDataAdapter adapter = new SqlDataAdapter(command);
             adapter.Fill(sqlTableLot);
 
-
-
             return sqlTableLot;
         }
 
@@ -78,8 +74,6 @@ namespace SDCM_check
 
             SqlDataAdapter adapter = new SqlDataAdapter(command);
             adapter.Fill(sqlTableLot);
-
-
 
             return sqlTableLot.Rows[0]["NC12_wyrobu"].ToString();
         }

@@ -20,30 +20,53 @@ namespace SDCM_check
         }
         Dictionary<string, ModelSpecification> modelSPecification = new Dictionary<string, ModelSpecification>();
 
+        public static bool IsInt(string s)
+        {
+            int x = 0;
+            return int.TryParse(s, out x);
+        }
+
         private Dictionary<string, PcbTesterMeasurements> dataTableToDict(DataTable sqlTable)
         {
             Dictionary<string, PcbTesterMeasurements> result = new Dictionary<string, PcbTesterMeasurements>();
-
-            foreach (DataRow row in sqlTable.Rows)
+            if (sqlTable.Rows.Count > 0)
             {
-                string serial = row["serial_no"].ToString();
-                string model = SqlOperations.GetModelIdFromLot( row["wip_entity_name"].ToString());
+                Dictionary<string, string> lotToModel = new Dictionary<string, string>();
 
-                string cxString = row["x"].ToString().Replace(".", ",");
-                string cyString = row["y"].ToString().Replace(".", ",");
-                if (cxString == "" || cyString == "") continue;
-                if (result.ContainsKey(serial)) continue;
-                if (model == "") continue;
-                double cx = Convert.ToDouble(cxString, new CultureInfo("pl-PL"));
-                double cy = double.Parse(row["y"].ToString().Replace(".", ","));
-                double sdcm = double.Parse(row["sdcm"].ToString());
-                double cct = double.Parse(row["cct"].ToString());
-                DateTime inspTime = DateTime.Parse(row["inspection_time"].ToString());
+                foreach (DataRow row in sqlTable.Rows)
+                {
+                    string serial = row["serial_no"].ToString();
+                    string lot = row["wip_entity_name"].ToString();
+                    string model = "";
 
-                PcbTesterMeasurements newPcb = new PcbTesterMeasurements(cx, cy, sdcm, cct, inspTime, model);
-                result.Add(serial, newPcb);
+                    if (!IsInt(lot)) continue;
+
+                    if (lotToModel.ContainsKey(lot))
+                    {
+                        model = lotToModel[lot];
+                    }
+                    else
+                    {
+                        model = SqlOperations.GetModelIdFromLot(lot);
+                        lotToModel.Add(lot, model);
+                    }
+
+                    string cxString = row["x"].ToString().Replace(".", ",");
+                    string cyString = row["y"].ToString().Replace(".", ",");
+                    if (cxString == "" || cyString == "") continue;
+                    if (result.ContainsKey(serial)) continue;
+                    if (model == "") continue;
+                    double cx = Convert.ToDouble(cxString, new CultureInfo("pl-PL"));
+                    double cy = double.Parse(row["y"].ToString().Replace(".", ","));
+                    double sdcm = double.Parse(row["sdcm"].ToString());
+                    double cct = double.Parse(row["cct"].ToString());
+                    DateTime inspTime = DateTime.Parse(row["inspection_time"].ToString());
+
+                    PcbTesterMeasurements newPcb = new PcbTesterMeasurements(cx, cy, sdcm, cct, inspTime, model);
+                    result.Add(serial, newPcb);
+                }
+                
             }
-
             return result;
         }
 
