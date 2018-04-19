@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace SDCM_check
 {
@@ -23,21 +25,42 @@ namespace SDCM_check
         {
             DataTable result = new DataTable();
             result.Columns.Add("serial_No");
+            result.Columns.Add("Model");
             result.Columns.Add("spec");
             result.Columns.Add("Cx");
             result.Columns.Add("Cy");
+            result.Columns.Add("SDCM_Max");
 
-            result.Columns.Add("SDCM");
+            result.Columns.Add("Wynik_SDCM");
 
 
             foreach (var testedPcb in testResults)
             {
                 string model = testedPcb.Value.Model;
-                string sdcm = CalculateSDCM(testedPcb.Value, modelSPecification[model]).ToString();
-                result.Rows.Add(testedPcb.Key,model+" "+modelSPecification[model].Cx+"x"+modelSPecification[model].Cy, testedPcb.Value.Cx,testedPcb.Value.Cy, sdcm);
+                string sdcm = "";
+                ModelSpecification modelSpec = null;
+
+                if (modelSPecification.TryGetValue(model, out modelSpec))
+                {
+                    sdcm = CalculateSDCM(testedPcb.Value, modelSpec).ToString();
+                    result.Rows.Add(testedPcb.Key, model, modelSPecification[model].Cx + "x" + modelSPecification[model].Cy + "  CCT="+ modelSPecification[model].Cct+"K" , testedPcb.Value.Cx, testedPcb.Value.Cy, modelSPecification[model].MaxSdcm, sdcm);
+                }
+                else
+                {
+                    if (File.Exists(@"Y:\Manufacturing_Center\Integral Quality Management\Dane CofC.xlsx"))
+                    {
+                        MessageBox.Show("Brak modelu: " + model + @" w pliku Excel: Y:\Manufacturing_Center\Integral Quality Management\Dane CofC.xlsx");
+                    }
+                    else
+                    {
+                        MessageBox.Show(@"Brak dostępu do pliku Y:\Manufacturing_Center\Integral Quality Management\Dane CofC.xlsx" + Environment.NewLine + "Sprawdź czy podłączone są dyski sieciowe");
+                    }
+                    break;
+                }
+                
             }
             
-            result.DefaultView.Sort = "SDCM DESC";
+            result.DefaultView.Sort = "Wynik_SDCM DESC";
             return result;
         }
     }

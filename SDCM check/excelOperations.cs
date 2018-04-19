@@ -143,7 +143,7 @@ namespace SDCM_check
                                 double cx = Convert.ToDouble(cxString, new CultureInfo("pl-PL"));
                                 double cy = Convert.ToDouble(cyString, new CultureInfo("pl-PL"));
 
-                                ModelSpecification newModel = new ModelSpecification(sdcm, cx, cy, ellipseShape[0], ellipseShape[1], ellipseShape[2], ellipseShape[3]);
+                                ModelSpecification newModel = new ModelSpecification(sdcm, cx, cy, ellipseShape[0], ellipseShape[1], ellipseShape[2], ellipseShape[3], cct);
                                 result.Add(model,newModel);
                             }
                         }

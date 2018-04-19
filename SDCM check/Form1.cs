@@ -111,8 +111,6 @@ namespace SDCM_check
             }
         }
 
-        
-
         private void textBoxPcb_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Return)
@@ -149,38 +147,38 @@ namespace SDCM_check
 
         private void autoSizeColumns()
         {
-            foreach (DataGridViewColumn col in dataGridView1.Columns)
+            if (dataGridView1.Rows.Count > 0)
             {
-                col.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            }
-            int ngCount = 0;
-            foreach (DataGridViewRow row in dataGridView1.Rows)
-            {
-                
-                double sdcm = Convert.ToDouble(row.Cells["SDCM"].Value.ToString());
-                if (sdcm < 3) break;
-                if (sdcm > 3) 
+                foreach (DataGridViewColumn col in dataGridView1.Columns)
                 {
-                    ngCount++;
-                    foreach (DataGridViewCell cell in row.Cells)
-                    {
-                        cell.Style.BackColor = Color.Red;
-                        cell.Style.ForeColor = Color.White;
-                    }
-                    
+                    col.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                 }
+                int ngCount = 0;
+                foreach (DataGridViewRow row in dataGridView1.Rows)
+                {
+
+                    double sdcm = Convert.ToDouble(row.Cells["Wynik_SDCM"].Value.ToString());
+                    double sdcmMax = Convert.ToDouble(row.Cells["SDCM_Max"].Value.ToString());
+
+                    if (sdcm <= sdcmMax) break;
+                    if (sdcm > sdcmMax)
+                    {
+                        ngCount++;
+                        foreach (DataGridViewCell cell in row.Cells)
+                        {
+                            cell.Style.BackColor = Color.Red;
+                            cell.Style.ForeColor = Color.White;
+                        }
+                    }
+                }
+                labelNgCount.Text = dataGridView1.Tag + " " +dataGridView1.Rows.Count+" szt."+Environment.NewLine+ "NG: " + ngCount + " szt.";
             }
-            labelNgCount.Text = dataGridView1.Tag +"  NG: " + ngCount + " szt.";
         }
-
-
 
         private void textBox_enter(object sender, EventArgs e)
         {
             TextBox txtBox = (TextBox)sender;
             txtBox.SelectAll();
         }
-
-        
     }
 }

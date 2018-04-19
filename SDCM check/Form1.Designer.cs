@@ -29,16 +29,18 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.textBoxLot = new System.Windows.Forms.TextBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.textBoxPcb = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.labelNgCount = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.textBoxBox = new System.Windows.Forms.TextBox();
-            this.labelNgCount = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.textBoxPcb = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -59,7 +61,23 @@
             // 
             this.dataGridView1.AllowUserToAddRows = false;
             this.dataGridView1.AllowUserToDeleteRows = false;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle6;
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView1.Location = new System.Drawing.Point(0, 100);
             this.dataGridView1.Name = "dataGridView1";
@@ -82,32 +100,25 @@
             this.panel1.Size = new System.Drawing.Size(969, 100);
             this.panel1.TabIndex = 2;
             // 
-            // label1
+            // label4
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(9, 51);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(31, 13);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "LOT:";
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.label4.Location = new System.Drawing.Point(256, 7);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(379, 31);
+            this.label4.TabIndex = 7;
+            this.label4.Text = "TYLKO WYROBY TRIDONIC!";
             // 
-            // label2
+            // labelNgCount
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(9, 25);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(31, 13);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "PCB:";
-            // 
-            // textBoxPcb
-            // 
-            this.textBoxPcb.Location = new System.Drawing.Point(46, 22);
-            this.textBoxPcb.Name = "textBoxPcb";
-            this.textBoxPcb.Size = new System.Drawing.Size(195, 20);
-            this.textBoxPcb.TabIndex = 2;
-            this.textBoxPcb.Enter += new System.EventHandler(this.textBox_enter);
-            this.textBoxPcb.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxPcb_KeyDown);
+            this.labelNgCount.AutoSize = true;
+            this.labelNgCount.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.labelNgCount.Location = new System.Drawing.Point(256, 38);
+            this.labelNgCount.Name = "labelNgCount";
+            this.labelNgCount.Size = new System.Drawing.Size(29, 31);
+            this.labelNgCount.TabIndex = 6;
+            this.labelNgCount.Text = "0";
             // 
             // label3
             // 
@@ -127,25 +138,32 @@
             this.textBoxBox.Enter += new System.EventHandler(this.textBox_enter);
             this.textBoxBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxBox_KeyDown);
             // 
-            // labelNgCount
+            // label2
             // 
-            this.labelNgCount.AutoSize = true;
-            this.labelNgCount.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.labelNgCount.Location = new System.Drawing.Point(267, 66);
-            this.labelNgCount.Name = "labelNgCount";
-            this.labelNgCount.Size = new System.Drawing.Size(29, 31);
-            this.labelNgCount.TabIndex = 6;
-            this.labelNgCount.Text = "0";
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(9, 25);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(31, 13);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "PCB:";
             // 
-            // label4
+            // textBoxPcb
             // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label4.Location = new System.Drawing.Point(267, 9);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(379, 31);
-            this.label4.TabIndex = 7;
-            this.label4.Text = "TYLKO WYROBY TRIDONIC!";
+            this.textBoxPcb.Location = new System.Drawing.Point(46, 22);
+            this.textBoxPcb.Name = "textBoxPcb";
+            this.textBoxPcb.Size = new System.Drawing.Size(195, 20);
+            this.textBoxPcb.TabIndex = 2;
+            this.textBoxPcb.Enter += new System.EventHandler(this.textBox_enter);
+            this.textBoxPcb.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxPcb_KeyDown);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(9, 51);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(31, 13);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "LOT:";
             // 
             // pictureBox1
             // 
