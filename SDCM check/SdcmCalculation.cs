@@ -14,36 +14,82 @@ namespace SDCM_check
         private static double CalculateSDCM(PcbTesterMeasurements testResults, ModelSpecification modelSPecification)
         {
             double result = 0;
-
-            double partA = Math.Pow((modelSPecification.Cx - testResults.Cx) * modelSPecification.A - (modelSPecification.Cy - testResults.Cy) * modelSPecification.B, 2) / Math.Pow(modelSPecification.C, 2);
-            double partB = Math.Pow((modelSPecification.Cx - testResults.Cx) * modelSPecification.B + (modelSPecification.Cy - testResults.Cy) * modelSPecification.A, 2) / Math.Pow(modelSPecification.D, 2);
-            result = Math.Sqrt(partA + partB);
+            if (modelSPecification.A > 0)
+            {
+                double partA = Math.Pow((modelSPecification.Cx - testResults.Cx) * modelSPecification.A - (modelSPecification.Cy - testResults.Cy) * modelSPecification.B, 2) / Math.Pow(modelSPecification.C, 2);
+                double partB = Math.Pow((modelSPecification.Cx - testResults.Cx) * modelSPecification.B + (modelSPecification.Cy - testResults.Cy) * modelSPecification.A, 2) / Math.Pow(modelSPecification.D, 2);
+                double AllensFactor = 0.04;
+                result = Math.Sqrt(partA + partB);
+                if (result > 0.04)
+                {
+                    result = result - AllensFactor;
+                }
+            }
             return result;
         }
 
-        public static DataTable makeSdcmTable(Dictionary<string,PcbTesterMeasurements> testResults, Dictionary<string,ModelSpecification> modelSPecification)
+        public static DataTable makeSdcmTable(Dictionary<string,PcbTesterMeasurements> testResults, Dictionary<string,ModelSpecification> modelSPecification, ref string currentModel)
         {
             DataTable result = new DataTable();
+            HashSet<string> modelCheck = new HashSet<string>();
             result.Columns.Add("serial_No");
-            result.Columns.Add("Model");
-            result.Columns.Add("spec");
-            result.Columns.Add("Cx");
-            result.Columns.Add("Cy");
-            result.Columns.Add("SDCM_Max");
+            Dictionary<string, int[]> indexOfNg = new Dictionary<string, int[]>();
 
-            result.Columns.Add("Wynik_SDCM");
-
+            result.Columns.Add("SDCM", typeof (double));
+            result.Columns.Add("Vf", typeof(double));
+            result.Columns.Add("lm", typeof(double));
+            result.Columns.Add("lm_w", typeof(double));
+            result.Columns.Add("CRI", typeof(double));
+            result.Columns.Add("CCT", typeof(double));
+            result.Columns.Add("WYNIK");
 
             foreach (var testedPcb in testResults)
             {
                 string model = testedPcb.Value.Model;
-                string sdcm = "";
+                modelCheck.Add(model);
+                double sdcm = 0;
                 ModelSpecification modelSpec = null;
+                int[] ngIndex = new int[] { 0, 0, 0, 0, 0, 0 };
 
                 if (modelSPecification.TryGetValue(model, out modelSpec))
                 {
-                    sdcm = CalculateSDCM(testedPcb.Value, modelSpec).ToString();
-                    result.Rows.Add(testedPcb.Key, model, modelSPecification[model].Cx + "x" + modelSPecification[model].Cy + "  CCT="+ modelSPecification[model].Cct+"K" , testedPcb.Value.Cx, testedPcb.Value.Cy, modelSPecification[model].MaxSdcm, sdcm);
+                    bool allOK = true;
+                    sdcm = CalculateSDCM(testedPcb.Value, modelSpec);
+
+                    if (sdcm>modelSPecification[model].MaxSdcm)
+                    {
+                        allOK = false;
+                    }
+                    if (testedPcb.Value.Vf < modelSPecification[model].Vf_Min || testedPcb.Value.Vf > modelSPecification[model].Vf_Max)
+                    {
+                        allOK = false;
+                        
+                    }
+                    if (testedPcb.Value.Lm < modelSPecification[model].Lm_Min || testedPcb.Value.Lm > modelSPecification[model].Lm_Max)
+                    {
+                        allOK = false;
+                    }
+                    if (testedPcb.Value.Cct < modelSPecification[model].CctMin || testedPcb.Value.Cct > modelSPecification[model].CctMax)
+                    {
+                        allOK = false;
+                    }
+                    if (testedPcb.Value.LmW < modelSPecification[model].LmW_Min)
+                    {
+                        allOK = false;
+                    }
+                    if (testedPcb.Value.Cri < modelSPecification[model].CRI_Min)
+                    {
+                        allOK = false;
+                    }
+
+                    string testResult = "OK";
+                    if (!allOK)
+                    {
+                        testResult = "NG";
+                    }
+
+                    //result.Rows.Add(testedPcb.Key, model, modelSPecification[model].Cx + "x" + modelSPecification[model].Cy + "  CCT="+ modelSPecification[model].Cct+"K" , testedPcb.Value.Cx, testedPcb.Value.Cy, modelSPecification[model].MaxSdcm, sdcm);
+                    result.Rows.Add(testedPcb.Key, sdcm, testedPcb.Value.Vf, testedPcb.Value.Lm, testedPcb.Value.LmW, testedPcb.Value.Cri, testedPcb.Value.Cct, testResult);
                 }
                 else
                 {
@@ -59,8 +105,22 @@ namespace SDCM_check
                 }
                 
             }
-            
-            result.DefaultView.Sort = "Wynik_SDCM DESC";
+            if(modelCheck.Count>1)
+            {
+                string msg = "Uwaga wykryto pomeszane modele!" + Environment.NewLine;
+                foreach (var mdl in modelCheck)
+                {
+                    msg += mdl + Environment.NewLine;
+                    currentModel = "Kilka modeli!!";
+                }
+                MessageBox.Show(msg);
+            }
+            else if(modelCheck.Count>0)
+            {
+                currentModel = modelCheck.ToList()[0];
+            }
+                        
+            //result.DefaultView.Sort = "Wynik_SDCM DESC";
             return result;
         }
     }

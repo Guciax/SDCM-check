@@ -24,7 +24,5 @@ namespace SDCM_check
         public double D { get; }
         public double Cx { get; }
         public double Cy { get; }
-
-        
     }
 }

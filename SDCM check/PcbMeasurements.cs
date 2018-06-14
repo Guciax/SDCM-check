@@ -8,7 +8,7 @@ namespace SDCM_check
 {
     class PcbTesterMeasurements
     {
-        public PcbTesterMeasurements(double Cx, double Cy, double Sdcm, double Cct, DateTime inspectionTime, string model)
+        public PcbTesterMeasurements(double Cx, double Cy, double Sdcm, double Cct, DateTime inspectionTime, string model, double vf, double lm, double lmW, double cri, double cct)
         {
             this.Cx = Cx;
             this.Cy = Cy;
@@ -16,6 +16,11 @@ namespace SDCM_check
             this.Cct = Cct;
             InspectionTime = inspectionTime;
             Model = model;
+            Vf = vf;
+            Lm = lm;
+            LmW = lmW;
+            Cri = cri;
+            Cct1 = cct;
         }
 
         public double Cx { get; }
@@ -24,5 +29,10 @@ namespace SDCM_check
         public double Cct { get; }
         public DateTime InspectionTime { get; }
         public string Model { get; }
+        public double Vf { get; }
+        public double Lm { get; }
+        public double LmW { get; }
+        public double Cri { get; }
+        public double Cct1 { get; }
     }
 }

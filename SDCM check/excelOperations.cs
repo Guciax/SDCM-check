@@ -20,6 +20,14 @@ namespace SDCM_check
             double D = 0;
             switch (CCT)
             {
+                case "2700": //0,59201318 	(0,805928280)	0,002700 	0,001400 
+                    {
+                        A = 0.59201318;
+                        B = -0.805928280;
+                        C = 0.002700;
+                        D = 0.001400;
+                        break;
+                    }
                 case "3000": //3000	0.59879065	-0.80090559	0.00278	0.00136
                     {
                         A = 0.59879065;
@@ -136,15 +144,16 @@ namespace SDCM_check
                                 string sdcmString = worksheet.Cells[row, sdcmColIndex].Value.ToString().Replace(" ", "").Trim();
                                 string cxString = worksheet.Cells[row, cxColIndex].Value.ToString().Replace(" ", "").Trim().Replace(".",",");
                                 string cyString = worksheet.Cells[row, cyColIndex].Value.ToString().Replace(" ", "").Trim().Replace(".", ",");
-                                string cct = worksheet.Cells[row, cctColIndex].Value.ToString().Replace(" ", "").Trim();
+                                string cct = ( worksheet.Cells[row, cctColIndex].Value.ToString().Replace(" ", "").Trim());
                                 double[] ellipseShape = GetEllipseParameters(cct);
 
                                 double sdcm = Convert.ToDouble(sdcmString, new CultureInfo("pl-PL"));
                                 double cx = Convert.ToDouble(cxString, new CultureInfo("pl-PL"));
                                 double cy = Convert.ToDouble(cyString, new CultureInfo("pl-PL"));
 
-                                ModelSpecification newModel = new ModelSpecification(sdcm, cx, cy, ellipseShape[0], ellipseShape[1], ellipseShape[2], ellipseShape[3], cct);
+                                ModelSpecification newModel = new ModelSpecification(sdcm, cx, cy, ellipseShape[0], ellipseShape[1], ellipseShape[2], ellipseShape[3], 0,0,0,0,0,0,0,0);
                                 result.Add(model,newModel);
+                                Debug.WriteLine(model + "-" + cct + "-" + ellipseShape[0]);
                             }
                         }
                     }
