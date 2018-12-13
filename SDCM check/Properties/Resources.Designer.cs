@@ -69,5 +69,14 @@ namespace SDCM_check.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
+        /// </summary>
+        internal static System.IO.UnmanagedMemoryStream Computer_Error_Alert_SoundBible_com_783113881 {
+            get {
+                return ResourceManager.GetStream("Computer_Error_Alert_SoundBible_com_783113881", resourceCulture);
+            }
+        }
     }
 }

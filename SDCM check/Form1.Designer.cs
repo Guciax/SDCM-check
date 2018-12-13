@@ -34,6 +34,7 @@
             this.textBoxLot = new System.Windows.Forms.TextBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.buttonFindNg = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.labelNgCount = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -42,13 +43,13 @@
             this.textBoxPcb = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.labelSpec = new System.Windows.Forms.Label();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.panel2 = new System.Windows.Forms.Panel();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // textBoxLot
@@ -92,6 +93,7 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.panel1.Controls.Add(this.buttonFindNg);
             this.panel1.Controls.Add(this.checkBox1);
             this.panel1.Controls.Add(this.labelNgCount);
             this.panel1.Controls.Add(this.label3);
@@ -105,6 +107,17 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(969, 109);
             this.panel1.TabIndex = 2;
+            // 
+            // buttonFindNg
+            // 
+            this.buttonFindNg.Location = new System.Drawing.Point(883, 9);
+            this.buttonFindNg.Name = "buttonFindNg";
+            this.buttonFindNg.Size = new System.Drawing.Size(74, 61);
+            this.buttonFindNg.TabIndex = 10;
+            this.buttonFindNg.Text = "Szukaj NG";
+            this.buttonFindNg.UseVisualStyleBackColor = true;
+            this.buttonFindNg.Visible = false;
+            this.buttonFindNg.Click += new System.EventHandler(this.buttonFindNg_Click);
             // 
             // checkBox1
             // 
@@ -188,19 +201,6 @@
             this.labelSpec.TabIndex = 8;
             this.labelSpec.Text = "Specyfikacja:";
             // 
-            // pictureBox1
-            // 
-            this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
-            this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pictureBox1.Image = global::SDCM_check.Properties.Resources._8b9a9b4e_560b_450c_8249_b2be7e03c297;
-            this.pictureBox1.Location = new System.Drawing.Point(205, 109);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(764, 534);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.pictureBox1.TabIndex = 8;
-            this.pictureBox1.TabStop = false;
-            this.pictureBox1.Visible = false;
-            // 
             // timer1
             // 
             this.timer1.Interval = 500;
@@ -215,6 +215,19 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(205, 534);
             this.panel2.TabIndex = 10;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
+            this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pictureBox1.Image = global::SDCM_check.Properties.Resources._8b9a9b4e_560b_450c_8249_b2be7e03c297;
+            this.pictureBox1.Location = new System.Drawing.Point(205, 109);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(764, 534);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.pictureBox1.TabIndex = 8;
+            this.pictureBox1.TabStop = false;
+            this.pictureBox1.Visible = false;
             // 
             // Form1
             // 
@@ -231,9 +244,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -254,6 +267,7 @@
         private System.Windows.Forms.Label labelSpec;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Button buttonFindNg;
     }
 }
 

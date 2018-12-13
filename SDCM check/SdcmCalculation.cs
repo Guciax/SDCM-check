@@ -17,13 +17,15 @@ namespace SDCM_check
             if (modelSPecification.A > 0)
             {
                 double partA = Math.Pow((modelSPecification.Cx - testResults.Cx) * modelSPecification.A - (modelSPecification.Cy - testResults.Cy) * modelSPecification.B, 2) / Math.Pow(modelSPecification.C, 2);
+                //double partA = Math.Pow((testResults.Cx-modelSPecification.Cx ) * modelSPecification.A - (testResults.Cy-modelSPecification.Cy) * modelSPecification.B, 2) / Math.Pow(modelSPecification.C, 2);
                 double partB = Math.Pow((modelSPecification.Cx - testResults.Cx) * modelSPecification.B + (modelSPecification.Cy - testResults.Cy) * modelSPecification.A, 2) / Math.Pow(modelSPecification.D, 2);
+                //double partB = Math.Pow((testResults.Cx-modelSPecification.Cx) * modelSPecification.B + (testResults.Cy-modelSPecification.Cy) * modelSPecification.A, 2) / Math.Pow(modelSPecification.D, 2);
                 double AllensFactor = 0.04;
                 result = Math.Sqrt(partA + partB);
-                if (result > 0.04)
-                {
-                    result = result - AllensFactor;
-                }
+                //if (result > 0.04)
+                //{
+                //    result = result - AllensFactor;
+                //}
             }
             return result;
         }
@@ -35,7 +37,8 @@ namespace SDCM_check
             result.Columns.Add("serial_No");
             Dictionary<string, int[]> indexOfNg = new Dictionary<string, int[]>();
 
-            result.Columns.Add("SDCM", typeof (double));
+            result.Columns.Add("SDCM_calc", typeof (double));
+            result.Columns.Add("SDCM_tester", typeof (double));
             result.Columns.Add("Vf", typeof(double));
             result.Columns.Add("lm", typeof(double));
             result.Columns.Add("lm_w", typeof(double));
@@ -47,16 +50,20 @@ namespace SDCM_check
             {
                 string model = testedPcb.Value.Model;
                 modelCheck.Add(model);
-                double sdcm = 0;
+                double sdcmCalculated = 0;
+                double sdcmTester = 0;
                 ModelSpecification modelSpec = null;
                 int[] ngIndex = new int[] { 0, 0, 0, 0, 0, 0 };
+                double maxSdcm = modelSPecification[model].MaxSdcm;
+                if (maxSdcm == 0) maxSdcm = 999;
 
                 if (modelSPecification.TryGetValue(model, out modelSpec))
                 {
                     bool allOK = true;
-                    sdcm = CalculateSDCM(testedPcb.Value, modelSpec);
+                    sdcmCalculated = CalculateSDCM(testedPcb.Value, modelSpec);
+                    sdcmTester = testedPcb.Value.Sdcm_Tester;
 
-                    if (sdcm>modelSPecification[model].MaxSdcm)
+                    if (sdcmCalculated> maxSdcm || sdcmTester > maxSdcm)
                     {
                         allOK = false;
                     }
@@ -89,7 +96,7 @@ namespace SDCM_check
                     }
 
                     //result.Rows.Add(testedPcb.Key, model, modelSPecification[model].Cx + "x" + modelSPecification[model].Cy + "  CCT="+ modelSPecification[model].Cct+"K" , testedPcb.Value.Cx, testedPcb.Value.Cy, modelSPecification[model].MaxSdcm, sdcm);
-                    result.Rows.Add(testedPcb.Key, sdcm, testedPcb.Value.Vf, testedPcb.Value.Lm, testedPcb.Value.LmW, testedPcb.Value.Cri, testedPcb.Value.Cct, testResult);
+                    result.Rows.Add(testedPcb.Key, sdcmCalculated, sdcmTester, testedPcb.Value.Vf, testedPcb.Value.Lm, testedPcb.Value.LmW, testedPcb.Value.Cri, testedPcb.Value.Cct, testResult);
                 }
                 else
                 {

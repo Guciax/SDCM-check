@@ -37,7 +37,7 @@ namespace SDCM_check
 
                 foreach (DataRow row in sqlTable.Rows)
                 {
-                    string serial = row["serial_no"].ToString();
+                    string serial = row["serial_no"].ToString().ToUpper();
                     if (result.ContainsKey(serial)) continue;
 
                     string lot = row["wip_entity_name"].ToString();
@@ -95,12 +95,16 @@ namespace SDCM_check
         {
             if (threadDone)
             {
-                if (currentModel != "")
+                if (currentModel == "")
                 {
-                    labelSpec.Text = "";
-                    if (modelSPecification[currentModel].Vf_Min==0)
+                    currentModel = SqlOperations.GetModelIdFromLot(textBoxLot.Text);
+                }
+                labelSpec.Text = "";
+                if (currentModel != null)
+                {
+                    if (modelSPecification[currentModel].Vf_Min == 0)
                     {
-                        labelSpec.Text = "BRAK DANYCH W BAZIE!!!"+Environment.NewLine+Environment.NewLine;
+                        labelSpec.Text = "BRAK DANYCH W BAZIE!!!" + Environment.NewLine + Environment.NewLine;
                         panel2.BackColor = Color.Red;
                         panel2.ForeColor = Color.White;
                     }
@@ -109,24 +113,26 @@ namespace SDCM_check
                         panel2.BackColor = Color.LightGray;
                         panel2.ForeColor = Color.Black;
                     }
+                    string sdcmMax = modelSPecification[currentModel].MaxSdcm.ToString() ;
+                    if (modelSPecification[currentModel].MaxSdcm == 0) sdcmMax = "Brak";
+
                     labelSpec.Text += "Specyfikacja:" + Environment.NewLine
                     + currentModel + Environment.NewLine
-                    + "SDCM max: " + modelSPecification[currentModel].MaxSdcm + Environment.NewLine
+                    + "SDCM max: " + sdcmMax + Environment.NewLine
                     + "Vf: " + modelSPecification[currentModel].Vf_Min + " - " + modelSPecification[currentModel].Vf_Max + Environment.NewLine
                     + "Lm: " + modelSPecification[currentModel].Lm_Min + " - " + modelSPecification[currentModel].Lm_Max + Environment.NewLine
                     + "Lm/W min: " + modelSPecification[currentModel].LmW_Min + Environment.NewLine
                     + "CRI min: " + modelSPecification[currentModel].CRI_Min + Environment.NewLine
                     + "CCT: " + modelSPecification[currentModel].CctMin + " - " + modelSPecification[currentModel].CctMax;
-
-
+                }
+                else
+                {
+                    sourceTable.Rows.Clear();
                 }
                 dataGridView1.DataSource = sourceTable;
 
-
-                
                 string tag = textBoxPcb.Text + textBoxBox.Text + textBoxLot.Text;
                 dataGridView1.Tag = tag;
-                
                 
                 textBoxPcb.Text = "";
                 textBoxBox.Text = "";
@@ -168,8 +174,15 @@ namespace SDCM_check
                             testedPcbs = dataTableToDict(testTable);
                         }
                     }
-                    
-                    sourceTable = SdcmCalculation.makeSdcmTable(testedPcbs, modelSPecification, ref currentModel);
+
+                    if (testedPcbs.Count > 0)
+                    {
+                        sourceTable = SdcmCalculation.makeSdcmTable(testedPcbs, modelSPecification, ref currentModel);
+                    }
+                    else
+                    {
+                        currentModel = "";
+                    }
                     threadDone = true;
                 }).Start();
                 
@@ -285,10 +298,12 @@ namespace SDCM_check
 
         private void dataGridView1_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
         {
+            bool allOK = true;
             if (currentModel != "")
             {
                 dataGridView1.SuspendLayout();
                 double sdcmMax = modelSPecification[currentModel].MaxSdcm;
+                if (sdcmMax == 0) sdcmMax = 999;
                 double vfMax = modelSPecification[currentModel].Vf_Max;
                 double vfMin = modelSPecification[currentModel].Vf_Min;
                 double lmMin = modelSPecification[currentModel].Lm_Min;
@@ -304,18 +319,25 @@ namespace SDCM_check
                     {
                         row.Cells["WYNIK"].Style.BackColor = Color.Red;
                         row.Cells["WYNIK"].Style.ForeColor = Color.White;
+                        allOK = false;
                     }
 
-                    double sdcm = (double)row.Cells["SDCM"].Value;
+                    double sdcmCalculated = (double)row.Cells["SDCM_calc"].Value;
+                    double sdcmTester = (double)row.Cells["SDCM_tester"].Value;
                     double vf = (double)row.Cells["Vf"].Value;
                     double lm = (double)row.Cells["lm"].Value;
                     double lmW = (double)row.Cells["lm_w"].Value;
                     double cri = (double)row.Cells["CRI"].Value;
                     double cct = (double)row.Cells["CCT"].Value;
 
-                    if (sdcm > sdcmMax)
+                    if (sdcmCalculated > sdcmMax)
                     {
-                        MarkNgCell(row.Cells["SDCM"]);
+                        MarkNgCell(row.Cells["SDCM_calc"]);
+                    }
+
+                    if (sdcmTester > sdcmMax)
+                    {
+                        MarkNgCell(row.Cells["SDCM_tester"]);
                     }
                     if (vf > vfMax || vf < vfMin)
                     {
@@ -340,12 +362,41 @@ namespace SDCM_check
                 }
                 dataGridView1.ResumeLayout();
             }
+
+            if(!allOK)
+            {
+                buttonFindNg.Visible = true;
+            }
+            else
+            {
+                buttonFindNg.Visible = false;
+            }
             
         }
         private void MarkNgCell(DataGridViewCell cell)
         {
             cell.Style.BackColor = Color.Red;
             cell.Style.ForeColor = Color.White;
+        }
+
+        private void buttonFindNg_Click(object sender, EventArgs e)
+        {
+            List<string> ngList = new List<string>();
+            List<string> okList = new List<string>();
+
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                if (row.Cells["WYNIK"].Value.ToString()=="OK")
+                {
+                    okList.Add(row.Cells["serial_no"].Value.ToString());
+                }
+                else
+                {
+                    ngList.Add(row.Cells["serial_no"].Value.ToString());
+                }
+            }
+            FindNg findForm = new FindNg(okList, ngList);
+            findForm.Show();
         }
     }
 }
